@@ -4,12 +4,18 @@ import { resolve } from 'node:path';
 import { checkPath, getInfoFiles } from './nwd.js';
 import { readFromFile, createNewFile, renameFile, copyFile, removeFile } from './command/files.js';
 import { getInfoSystems } from './command/os.js';
-import { createHashFile } from './utils.js';
+import { createHashFile, parseInput } from './utils.js';
 import { compressOrDecompressFile } from './command/zip.js';
+import { goodByeHandler, goodBye } from './helpers.js';
+import { MESSAGE } from './constants.js';
 
 class App {
-  constructor(workPath = homedir()) {
+  constructor(workPath = homedir(), userName = 'Anonymous') {
     this._workPath = workPath;
+    this._userName = userName;
+
+    console.log(`Welcome to the File Manager, ${userName}!`);
+    console.log(`You are currently in ${workPath}`);
   }
 
   _listCommands = [
@@ -133,6 +139,40 @@ class App {
       resolve(this._workPath, pathToDestination),
       'decompress'
     );
+  }
+
+  getCommand(input) {
+    const [nameCommand, ...params] = input;
+    const command = this._listCommands.find((command) => command.name === nameCommand) ?? null;
+
+    if (!command) return null;
+    if (!command.arg) return { ...command };
+    if (input.length - 1 === command.arg) return { ...command, arg: [...params] };
+  }
+
+  async start() {
+    process.stdin.on('data', goodByeHandler);
+
+    process.stdin.on('data', async (chunk) => {
+      const data = chunk.toString().trim();
+
+      const cli = parseInput(data);
+
+      const command = this.getCommand(cli);
+
+      if (!command) {
+        console.log(MESSAGE.invalid);
+        return;
+      }
+      const { arg, name } = command;
+      try {
+        await this[name](arg);
+      } catch (error) {
+        console.log(MESSAGE.error);
+      }
+    });
+
+    process.on('SIGINT', () => goodBye());
   }
 }
 

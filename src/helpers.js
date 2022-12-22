@@ -1,5 +1,3 @@
-import { listCommands } from './constants.js';
-
 const getUserName = (arrayData) => {
   const data = arrayData
     .slice(2)
@@ -21,8 +19,4 @@ const goodByeHandler = (chunk) => {
   }
 };
 
-const findCommand = (nameCommand) => {
-  return listCommands.find((command) => command.name === nameCommand) ?? null;
-};
-
-export { getUserName, goodBye, goodByeHandler, findCommand };
+export { getUserName, goodBye, goodByeHandler };
