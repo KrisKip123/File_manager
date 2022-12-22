@@ -151,7 +151,7 @@ class App {
   }
 
   async start() {
-    process.stdin.on('data', goodByeHandler);
+    process.stdin.on('data', (chunk) => goodByeHandler(chunk, this._userName));
 
     process.stdin.on('data', async (chunk) => {
       const data = chunk.toString().trim();
@@ -175,7 +175,7 @@ class App {
       console.log(`You are currently in ${this._workPath}`);
     });
 
-    process.on('SIGINT', () => goodBye());
+    process.on('SIGINT', () => goodBye(this._userName));
   }
 }
 

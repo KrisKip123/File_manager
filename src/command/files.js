@@ -12,7 +12,10 @@ const readFromFile = async (pathToFile) => {
       process.stdout.write(data);
     });
 
-    readStream.on('end', () => resolve());
+    readStream.on('end', () => {
+      process.stdout.write('\n');
+      resolve();
+    });
 
     readStream.on('error', () => reject());
   });

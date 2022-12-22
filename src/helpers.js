@@ -7,15 +7,15 @@ const getUserName = (arrayData) => {
   return data[0].split('=')[1];
 };
 
-const goodBye = () => {
-  console.log(`Thank you for using File Manager, ${getUserName(process.argv)}, goodbye!`);
+const goodBye = (userName) => {
+  console.log(`Thank you for using File Manager, ${userName}, goodbye!`);
   process.exit();
 };
 
-const goodByeHandler = (chunk) => {
+const goodByeHandler = (chunk, userName) => {
   const data = chunk.toString().trim();
   if (data === '.exit') {
-    goodBye();
+    goodBye(userName);
   }
 };
 
