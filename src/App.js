@@ -162,6 +162,8 @@ class App {
 
       if (!command) {
         console.log(MESSAGE.invalid);
+        console.log(`You are currently in ${this._workPath}`);
+
         return;
       }
       const { arg, name } = command;
@@ -170,6 +172,7 @@ class App {
       } catch (error) {
         console.log(MESSAGE.error);
       }
+      console.log(`You are currently in ${this._workPath}`);
     });
 
     process.on('SIGINT', () => goodBye());
